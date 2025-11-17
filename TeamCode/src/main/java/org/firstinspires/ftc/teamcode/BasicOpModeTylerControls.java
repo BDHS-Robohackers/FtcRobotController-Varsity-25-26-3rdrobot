@@ -16,7 +16,8 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     //private Gamepad armController;
 
     private double flywheelControl = 0;
-    private double intakeControl = 0;
+    private double bottomIntakeControl = 0;
+    private double topIntakeControl = 0;
     private boolean isTheButtonPressed = false;
 
     @Override
@@ -46,9 +47,12 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         while (opModeIsActive()) {
             updateDrive();
             updateFlywheel();
-            updateIntake();
+            updateBottomIntake();
+            updateTopIntake();
             telemetry.addData("Flywheel %",flywheelControl*100);
-            updateEthanServo();  // Update Ethan servo control based on D-pad input
+            telemetry.addData("TopIntake %",topIntakeControl*100);
+            telemetry.addData("BottomIntake %",bottomIntakeControl*100);
+            // Update Ethan servo control based on D-pad input
 
             telemetry.update();
         }
@@ -69,9 +73,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (driverController.right_bumper) {
             flywheelControl = 0;
         } else if (driverController.x) {
-            flywheelControl = 0.55;
+            flywheelControl = -0.55;
         } else if (driverController.b) {
-            flywheelControl = 0.40;
+            flywheelControl = -1.0;
         } else if (driverController.start) {
             if (!isTheButtonPressed) {
                flywheelControl += 0.05;
@@ -92,25 +96,30 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             robot.updateFlywheelMotors(0.0);  // Stop flywheel
         }
     }
-    private void updateIntake() {
+    private void updateBottomIntake() {
         if (driverController.y) {
-            intakeControl = 1;
+            bottomIntakeControl = 1;
         } else if (driverController.a) {
-            intakeControl = -1;
+            bottomIntakeControl = -1;
         } else {
-            intakeControl = 0;
+            bottomIntakeControl = 0;
         }
-        robot.updateIntakeMotors(intakeControl);
+        robot.updateBottomIntakeMotor(bottomIntakeControl);
 
+    }
+
+    private void updateTopIntake() {
+        if (driverController.dpad_up) {
+            topIntakeControl = 1;
+        } else if (driverController.dpad_down) {
+            topIntakeControl = -1;
+        } else {
+            topIntakeControl = 0;
+        }
+        robot.updateTopIntakeMotor(topIntakeControl);
     }
 
     // Update Ethan servo based on D-pad input
-    private void updateEthanServo() {
-        if (driverController.dpad_up) {
-            robot.updateEthanServo(0.0);  // Move Ethan forward (servo position 1.0)
-        } else {
-            robot.updateEthanServo(1.0);  // Move Ethan reverse (servo position 0.0)
-        }
-    }
+
 }
 // blah blah blah

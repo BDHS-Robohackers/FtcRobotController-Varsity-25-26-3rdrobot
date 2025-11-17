@@ -19,22 +19,21 @@ public class Robot {
     public DcMotor topIntake;
     public DcMotor bottomIntake;
 
-    public Servo ethan;  // Servo for Ethan control
+
 
     public Robot() {}
 
     public void initialize(HardwareMap hardwareMap) {
         try {
-            leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-            leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-            rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-            rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+            leftFrontDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
+            leftBackDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
+            rightFrontDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
+            rightBackDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
             leftFly = hardwareMap.get(DcMotor.class, "leftFly");
             rightFly = hardwareMap.get(DcMotor.class, "rightFly");
             topIntake = hardwareMap.get(DcMotor.class, "topIntake");
             bottomIntake = hardwareMap.get(DcMotor.class, "bottomIntake");
 
-            ethan = hardwareMap.get(Servo.class, "ethan");
 
         } catch (Exception e) {
             Log.e(TAG, "Error initializing hardware", e); // Replaces e.printStackTrace()
@@ -82,11 +81,12 @@ public class Robot {
         topIntake.setPower(1 * power);
         bottomIntake.setPower(1 * power);
     }
-
-    // Update Ethan servo's position (forward or reverse) with clamped values
-    public void updateEthanServo(double position) {
-        // Clamp the position between some max and min value to prevent it from going too far
-        position = Math.max(0.55, Math.min(position, 0.80));
-        ethan.setPosition(position);
+    public void updateTopIntakeMotor(double power) {
+        topIntake.setPower(1 * power);
     }
+    public void updateBottomIntakeMotor(double power) {
+        bottomIntake.setPower(1 * power);
+    }
+
+
 }
