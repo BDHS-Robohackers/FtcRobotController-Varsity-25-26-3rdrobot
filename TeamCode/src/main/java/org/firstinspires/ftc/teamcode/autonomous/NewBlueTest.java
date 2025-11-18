@@ -75,41 +75,16 @@ public class NewBlueTest extends LinearOpMode {
             return new SpinDown();
         }
     }
-    public class kick {
-        private Servo kicker;
 
-        public kick(HardwareMap hardwareMap) {
-            kicker = hardwareMap.get(Servo.class, "ethan");
-        }
 
-        public class kickDown implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                kicker.setPosition(-.5);
-                return false;
-            }
-        }
-        public Action kickDown() {
-            return new kickDown();
-        }
 
-        public class kickUp implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                kicker.setPosition(1);
-                return false;
-            }
-        }
-        public Action kickUp() {
-            return new kickUp();
-        }
-    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         Pose2d initialPose = new Pose2d(7.00, -70.00, Math.toRadians(90.00));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         shooter shooter = new shooter(hardwareMap);
-        kick kick = new kick(hardwareMap);
+
       //  AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder();
         while (!isStopRequested() && !opModeIsActive()) {
             int position = visionOutputPosition;
@@ -157,22 +132,7 @@ public class NewBlueTest extends LinearOpMode {
         Actions.runBlocking(new SequentialAction(
                 shootSet1.build(),
                 new ParallelAction(
-                        shooter.spinUp(),
-                        new SequentialAction(
-                                new SleepAction(1),
-                                kick.kickUp(),
-                                new SleepAction(1),
-                                kick.kickDown(),
-                                new SleepAction(1),
-                                kick.kickUp(),
-                                new SleepAction(1),
-                                kick.kickDown(),
-                                new SleepAction(1),
-                                kick.kickUp(),
-                                new SleepAction(1),
-                                kick.kickDown(),
-                                shooter.spinDown()
-                            )
+                        shooter.spinUp()
                         )
 
                 )
