@@ -9,17 +9,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Robot {
 
     private static final String TAG = "Robot"; // Tag for logging
+    public static final float FLY_WHEEL_MAX_THRESHOLD = 0.7f;
 
     public DcMotor leftFrontDrive;
     public DcMotor leftBackDrive;
     public DcMotor rightFrontDrive;
     public DcMotor rightBackDrive;
-    public DcMotor rightFly;
-    public DcMotor leftFly;
-    public DcMotor topIntake;
-    public DcMotor bottomIntake;
-
-
+    public DcMotor fly;
+    public DcMotor feedFly;
+    public DcMotor intake;
 
     public Robot() {}
 
@@ -29,12 +27,9 @@ public class Robot {
             leftBackDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
             rightFrontDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
             rightBackDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-            leftFly = hardwareMap.get(DcMotor.class, "leftFly");
-            rightFly = hardwareMap.get(DcMotor.class, "rightFly");
-            topIntake = hardwareMap.get(DcMotor.class, "topIntake");
-            bottomIntake = hardwareMap.get(DcMotor.class, "bottomIntake");
-
-
+            fly = hardwareMap.get(DcMotor.class, "fly");
+            intake = hardwareMap.get(DcMotor.class, "intake");
+            feedFly = hardwareMap.get(DcMotor.class, "feedFly");
         } catch (Exception e) {
             Log.e(TAG, "Error initializing hardware", e); // Replaces e.printStackTrace()
         }
@@ -73,22 +68,20 @@ public class Robot {
         rightBackDrive.setPower(rightBackPower);
     }
 
+    public void updateFlyFeedMotor(double power) {
+        feedFly.setPower(1 * power);
+    }
+
     public void updateFlywheelMotors(double power) {
-        leftFly.setPower(1 * power);
-        rightFly.setPower(-1 * power);
+        fly.setPower(1 * power * FLY_WHEEL_MAX_THRESHOLD);
+    }
+
+    public void updateFlywheelMotorsOverrideMax(double power) {
+        fly.setPower(1 * power);
     }
     public void updateIntakeMotors(double power) {
-        topIntake.setPower(1 * power);
-        bottomIntake.setPower(1 * power);
+        intake.setPower(1 * power);
     }
-    public void updateTopIntakeMotor(double power) {
-        topIntake.setPower(1 * power);
-    }
-    public void updateBottomIntakeMotor(double power) {
-        bottomIntake.setPower(1 * power);
-    }
-
-
 }
 
 // rob was here
