@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Robot {
 
     private static final String TAG = "Robot"; // Tag for logging
-    public static final float FLY_WHEEL_MAX_THRESHOLD = 0.7f;
+    public static final float FLY_WHEEL_MAX_THRESHOLD = 0.8f;
 
     public DcMotor leftFrontDrive;
     public DcMotor leftBackDrive;

@@ -20,6 +20,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     private boolean isTheButtonPressed = false;
     private boolean isYPressed = false;
 
+    private double axial = 0;
+    private double lateral = 0;
+    private double yaw = 0;
+
     @Override
     public void runOpMode() {
         driverController = gamepad1;
@@ -50,6 +54,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             updateIntake();
             telemetry.addData("Flywheel %",flywheelControl*100);
             telemetry.addData("Intake %",intakeControl*100);
+            telemetry.addData("Yaw (rotate) %", yaw);
+            telemetry.addData("Axial (FW/RV) %", axial);
+            telemetry.addData("Lateral (Strafe) %", lateral);
             // Update Ethan servo control based on D-pad input
 
             telemetry.update();
@@ -58,9 +65,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     // Update driving controls (tank drive or similar).
     private void updateDrive() {
-        double axial = (1.0 * driverController.right_stick_x); // Forward Back
-        double lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
-        double yaw = (-0.6 * driverController.left_stick_y); // Rotate
+        axial = (1.0 * driverController.right_stick_x); // Forward Back
+        lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
+        yaw = (-0.6 * driverController.left_stick_y); // Rotate
 
         robot.updateDriveMotors(axial, lateral, yaw);
     }
