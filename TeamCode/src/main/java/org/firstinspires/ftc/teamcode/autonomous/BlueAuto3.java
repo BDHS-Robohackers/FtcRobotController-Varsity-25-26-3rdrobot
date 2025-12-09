@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Autonomous(name="Blue Front 3", group="Autonomous")
+@Autonomous(name="Blue Front 6", group="Autonomous")
 public class BlueAuto3 extends LinearOpMode {
 
     private ElapsedTime time = new ElapsedTime();
@@ -33,6 +33,7 @@ public class BlueAuto3 extends LinearOpMode {
             this.action = action;
         }
     }
+
 
     @Override
     public void runOpMode() throws InterruptedException {
