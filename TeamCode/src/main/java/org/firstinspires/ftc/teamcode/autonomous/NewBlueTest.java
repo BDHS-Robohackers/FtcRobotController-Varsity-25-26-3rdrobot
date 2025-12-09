@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@Autonomous(name = "BlueAuto", group = "Autonomous")
+@Autonomous(name = "zdontuse", group = "Autonomous")
 public class NewBlueTest extends LinearOpMode {
     int visionOutputPosition = 0;
 
