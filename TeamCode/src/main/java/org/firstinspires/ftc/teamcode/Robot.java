@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
@@ -15,7 +14,7 @@ public class Robot {
     public DcMotor leftBackDrive;
     public DcMotor rightFrontDrive;
     public DcMotor rightBackDrive;
-    public DcMotorEx fly;
+    public DcMotor fly;
     public DcMotor feedFly;
     public DcMotor intake;
 
@@ -27,22 +26,8 @@ public class Robot {
     private static final double TICKS_PER_INCH =
             TICKS_PER_REV / (Math.PI * WHEEL_DIAMETER_INCHES);
 
-    // --- Flywheel PIDF + smoothing ---
-    private double targetRPM = 0;
-    private double filteredVelocity = 0;
-    private long lastUpdateTime = 0;
 
-    private static final double RAMP_RATE = 0.015; // how fast power can change per loop
-    private static final double VELOCITY_SMOOTHING = 0.7; // higher = smoother
-    private static final double TICKS_PER_REV_FLY = 28; // REV 6000 motor internal encoder
 
-    // PIDF coefficients (starter values)
-    private static final double kP = 0.0020;
-    private static final double kI = 0.0;
-    private static final double kD = 0.0;
-    private static final double kF = 0.085;
-
-    private double flywheelPower = 0;
 
 
     // -------------------------------
@@ -53,46 +38,10 @@ public class Robot {
             leftFrontDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
             leftBackDrive   = hardwareMap.get(DcMotor.class, "back_left_drive");
             rightFrontDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-            rightBackDrive  = hardwareMap.get(DcMotor.class, "back_right_drive");
-            fly             = hardwareMap.get(DcMotorEx.class, "fly");
-            intake          = hardwareMap.get(DcMotor.class, "intake");
-            feedFly         = hardwareMap.get(DcMotor.class, "feedFly");
-
-            // -------------------------------
-            // 🔄 MOTOR DIRECTIONS
-            // -------------------------------
-            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-            rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-
-            fly.setDirection(DcMotor.Direction.REVERSE);
-            intake.setDirection(DcMotor.Direction.FORWARD);
-            feedFly.setDirection(DcMotor.Direction.FORWARD);
-
-            // -------------------------------
-            // 🔧 ENCODER SETUP
-            // -------------------------------
-            resetDriveEncoders();
-
-            fly.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            fly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            feedFly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-            // -------------------------------
-            // 🛑 ZERO POWER BEHAVIORS
-            // -------------------------------
-            leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-            intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            feedFly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
+            rightBackDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+            fly = hardwareMap.get(DcMotor.class, "fly");
+            intake = hardwareMap.get(DcMotor.class, "intake");
+            feedFly = hardwareMap.get(DcMotor.class, "feedFly");
         } catch (Exception e) {
             Log.e(TAG, "Error initializing hardware", e);
         }
@@ -226,91 +175,26 @@ public class Robot {
         rightBackDrive.setPower(rightBackPower);
     }
 
-    public void updateFlyFeedMotor(double power) { feedFly.setPower(power); }
-
-    // -------------------------------
-// 🎯 CLOSED-LOOP FLYWHEEL CONTROL
-// -------------------------------
-
-    public void setFlywheelRPM(double rpm) {
-        targetRPM = rpm;
+    public void updateFlyFeedMotor(double power) {
+        feedFly.setPower(1 * power);
     }
 
-    public void stopFlywheel() {
-        targetRPM = 0;
-        fly.setPower(0);
+    public void updateFlywheelMotors(double power) {
+        fly.setPower(1 * power * FLY_WHEEL_MAX_THRESHOLD);
     }
 
-    // call this once per loop (teleop)
-    public void updateFlywheelControl() {
-        long now = System.nanoTime();
-        if (lastUpdateTime == 0) {
-            lastUpdateTime = now;
-            return;
-        }
-
-        double dt = (now - lastUpdateTime) / 1e9; // convert ns → seconds
-        lastUpdateTime = now;
-
-        // get raw encoder velocity (ticks per second)
-        double rawVel = fly.getVelocity(); // works in RUN_USING_ENCODER
-
-        // smooth it so it doesn't spaz at high RPM
-        filteredVelocity = VELOCITY_SMOOTHING * filteredVelocity +
-                (1 - VELOCITY_SMOOTHING) * rawVel;
-
-        // convert ticks/sec → RPM
-        double currentRPM = (filteredVelocity / TICKS_PER_REV_FLY) * 60.0;
-
-        // PIDF control
-        double error = targetRPM - currentRPM;
-        double output = (error * kP) + (kF * (targetRPM / 6000.0)); // /6000 normalizes
-
-        // ramp limit so power doesn’t spike & overshoot
-        double maxChange = RAMP_RATE;
-        output = clamp(output, flywheelPower - maxChange, flywheelPower + maxChange);
-
-        flywheelPower = clamp(output, 0, 1);
-
-        fly.setPower(flywheelPower);
-    }
-
-    private double clamp(double val, double min, double max) {
-        return Math.max(min, Math.min(max, val));
-    }
-
-
-    public void updateIntakeMotors(double power) { intake.setPower(power); }
-    // -------------------------------
-// 🤖 INTAKE HELPERS
-// -------------------------------
-    public void intakeStart() {
-        intake.setPower(1);
-    }
-
-    public void intakeStop() {
-        intake.setPower(0);
-    }
-
-    // -------------------------------
-// 📤 FEEDER HELPERS
-// -------------------------------
-    public void feedStart() {
-        feedFly.setPower(1);
+    public void updateFlywheelMotorsOverrideMax(double power) {
+        fly.setPower(1 * power);
     }
 
     public void feedStop() {
         feedFly.setPower(0);
     }
-
-
-    public double getTargetRPM() {
-        return targetRPM;
+    public void updateIntakeMotors(double power) {
+        intake.setPower(1 * power);
     }
 
-    public double getCurrentRPM() {
-        // convert filteredVelocity → RPM
-        return (filteredVelocity / TICKS_PER_REV_FLY) * 60.0;
-    }
+
+
 
 }

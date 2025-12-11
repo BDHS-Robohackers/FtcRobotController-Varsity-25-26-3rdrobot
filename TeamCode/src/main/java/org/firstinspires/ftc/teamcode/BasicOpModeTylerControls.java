@@ -49,7 +49,6 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         // Run until the end of the match (driver presses STOP or time runs out).
         while (opModeIsActive()) {
-            robot.updateFlywheelControl();
             updateDrive();
             updateFlywheel();
             updateIntake();
@@ -58,10 +57,6 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             telemetry.addData("Yaw (rotate) %", yaw);
             telemetry.addData("Axial (FW/RV) %", axial);
             telemetry.addData("Lateral (Strafe) %", lateral);
-            telemetry.addData("Flywheel Target RPM", robot.getTargetRPM());
-            telemetry.addData("Flywheel Current RPM", robot.getCurrentRPM());
-
-
             // Update Ethan servo control based on D-pad input
 
             telemetry.update();
@@ -110,10 +105,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         }
 
         if (flywheelControl != 0) {
-            robot.setFlywheelRPM(flywheelControl);  // variable speed on flywheel depending on button
+            robot.updateFlywheelMotors(flywheelControl);  // variable speed on flywheel depending on button
         } else {
             robot.updateFlyFeedMotor(0.0f);
-            robot.stopFlywheel();  // Stop flywheel
+            robot.updateFlywheelMotors(0.0f);  // Stop flywheel
         }
     }
 

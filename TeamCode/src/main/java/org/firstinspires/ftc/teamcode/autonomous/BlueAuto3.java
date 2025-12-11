@@ -54,7 +54,7 @@ public class BlueAuto3 extends LinearOpMode {
         List<TimedAction> plan = new ArrayList<>();
         // spin up
         plan.add(new TimedAction(5, v -> {
-            robot.setFlywheelRPM(3700);
+            robot.updateFlywheelMotors(-0.75);
             robot.updateDriveMotors(0,0,0);
         }));
         // Strafe
@@ -220,7 +220,7 @@ public class BlueAuto3 extends LinearOpMode {
         plan.add(new TimedAction(Double.POSITIVE_INFINITY, v -> {
             robot.updateFlyFeedMotor(0);
             robot.updateDriveMotors(0,0,0);
-            robot.stopFlywheel();
+            robot.updateFlywheelMotors(0);
             robot.updateIntakeMotors(0);
         }));
 
