@@ -41,7 +41,7 @@ public class BlueBackAuto3 extends LinearOpMode {
         while (opModeIsActive()) {
             if (time.seconds() < 1) {
                 // Idle
-                robot.updateFlywheelMotors(-0.90);
+                robot.setFlywheelRPM(3700);
                 robot.updateDriveMotors(0, 0, 0);
             } else if (time.seconds() < 1 + 1) {
                 // Move Fwd
@@ -101,7 +101,7 @@ public class BlueBackAuto3 extends LinearOpMode {
                 // Stop the robot
                 robot.updateFlyFeedMotor(0);
                 robot.updateDriveMotors(0, 0, 0);
-                robot.updateFlywheelMotors(0);
+                robot.stopFlywheel();
                 robot.updateIntakeMotors(0);
             }
         }

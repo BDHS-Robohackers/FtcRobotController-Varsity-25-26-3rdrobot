@@ -49,6 +49,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         // Run until the end of the match (driver presses STOP or time runs out).
         while (opModeIsActive()) {
+            robot.updateFlywheelControl();
             updateDrive();
             updateFlywheel();
             updateIntake();
@@ -57,6 +58,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             telemetry.addData("Yaw (rotate) %", yaw);
             telemetry.addData("Axial (FW/RV) %", axial);
             telemetry.addData("Lateral (Strafe) %", lateral);
+            telemetry.addData("Flywheel Target RPM", robot.getTargetRPM());
+            telemetry.addData("Flywheel Current RPM", robot.getCurrentRPM());
+
+
             // Update Ethan servo control based on D-pad input
 
             telemetry.update();
@@ -79,17 +84,17 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (otherController.right_bumper) {
             flywheelControl = 0;
         } else if (otherController.x) {
-            flywheelControl = -0.75;
+            flywheelControl = 3600;
         } else if (otherController.b) {
-            flywheelControl = -0.90;
+            flywheelControl = 4320;
         } else if (otherController.start) {
             if (!isTheButtonPressed) {
-                flywheelControl += 0.05;
+                flywheelControl += 240;
                 isTheButtonPressed = true;
             }
         } else if (otherController.back) {
             if (!isTheButtonPressed) {
-                flywheelControl -= 0.05;
+                flywheelControl -= 240;
                 isTheButtonPressed = true;
             }
         } else {
@@ -105,10 +110,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         }
 
         if (flywheelControl != 0) {
-            robot.updateFlywheelMotors(flywheelControl);  // variable speed on flywheel depending on button
+            robot.setFlywheelRPM(flywheelControl);  // variable speed on flywheel depending on button
         } else {
             robot.updateFlyFeedMotor(0.0f);
-            robot.updateFlywheelMotors(0.0f);  // Stop flywheel
+            robot.stopFlywheel();  // Stop flywheel
         }
     }
 

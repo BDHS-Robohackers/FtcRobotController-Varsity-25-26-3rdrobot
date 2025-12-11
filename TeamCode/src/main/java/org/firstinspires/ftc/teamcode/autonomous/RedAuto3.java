@@ -41,7 +41,7 @@ public class RedAuto3 extends LinearOpMode {
         while (opModeIsActive()) {
             if (time.seconds() < 2.5) {
                 // Idle
-                robot.updateFlywheelMotors(-0.75);
+                robot.setFlywheelRPM(3700);
                 robot.updateDriveMotors(0, 0, 0);
             } else if (time.seconds() < 1.5+1 + 1.5) {
                 // Move Sideways
@@ -88,7 +88,7 @@ public class RedAuto3 extends LinearOpMode {
                 // Stop the robot
                 robot.updateFlyFeedMotor(0);
                 robot.updateDriveMotors(0, 0, 0);
-                robot.updateFlywheelMotors(0);
+                robot.stopFlywheel();
                 robot.updateIntakeMotors(0);
             }
         }
