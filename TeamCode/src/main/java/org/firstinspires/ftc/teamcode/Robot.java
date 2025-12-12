@@ -117,10 +117,10 @@ public class Robot {
         resetDriveEncoders();
         int move = (int) (inches * TICKS_PER_INCH);
 
-        leftFrontDrive.setTargetPosition(move);
-        leftBackDrive.setTargetPosition(move);
-        rightFrontDrive.setTargetPosition(move);
-        rightBackDrive.setTargetPosition(move);
+        leftFrontDrive.setTargetPosition(-move);
+        leftBackDrive.setTargetPosition(-move);
+        rightFrontDrive.setTargetPosition(-move);
+        rightBackDrive.setTargetPosition(-move);
 
         runToPosMode();
 

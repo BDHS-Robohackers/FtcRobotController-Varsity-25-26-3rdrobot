@@ -79,9 +79,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (otherController.right_bumper) {
             flywheelControl = 0;
         } else if (otherController.x) {
-            flywheelControl = 3600;
+            flywheelControl = 0.75;
         } else if (otherController.b) {
-            flywheelControl = 4320;
+            flywheelControl = 0.90;
         } else if (otherController.start) {
             if (!isTheButtonPressed) {
                 flywheelControl += 0.05;
