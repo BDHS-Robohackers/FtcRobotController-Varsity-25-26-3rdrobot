@@ -73,9 +73,9 @@ public class Robot {
         resetDriveEncoders();
         int move = (int) (inches * TICKS_PER_INCH);
 
-        leftFrontDrive.setTargetPosition(move);
+        leftFrontDrive.setTargetPosition(-move);
         rightFrontDrive.setTargetPosition(move);
-        leftBackDrive.setTargetPosition(move);
+        leftBackDrive.setTargetPosition(-move);
         rightBackDrive.setTargetPosition(move);
 
         runToPosMode();
@@ -95,9 +95,9 @@ public class Robot {
         resetDriveEncoders();
         int move = (int) (inches * TICKS_PER_INCH);
 
-        leftFrontDrive.setTargetPosition(-move);
+        leftFrontDrive.setTargetPosition(move);
         rightFrontDrive.setTargetPosition(move);
-        leftBackDrive.setTargetPosition(move);
+        leftBackDrive.setTargetPosition(-move);
         rightBackDrive.setTargetPosition(-move);
 
         runToPosMode();
@@ -119,8 +119,8 @@ public class Robot {
 
         leftFrontDrive.setTargetPosition(move);
         leftBackDrive.setTargetPosition(move);
-        rightFrontDrive.setTargetPosition(-move);
-        rightBackDrive.setTargetPosition(-move);
+        rightFrontDrive.setTargetPosition(move);
+        rightBackDrive.setTargetPosition(move);
 
         runToPosMode();
 
@@ -153,10 +153,10 @@ public class Robot {
     public void updateDriveMotors(double axial, double lateral, double yaw) {
         double max;
 
-        double leftFrontPower = axial + lateral + yaw;
-        double rightFrontPower = -axial - lateral + yaw;
-        double leftBackPower = axial - lateral + yaw;
-        double rightBackPower = -axial + lateral + yaw;
+        double leftFrontPower = -axial + lateral + yaw;
+        double rightFrontPower = axial + lateral + yaw;
+        double leftBackPower = -axial - lateral + yaw;
+        double rightBackPower = axial - lateral + yaw;
 
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
