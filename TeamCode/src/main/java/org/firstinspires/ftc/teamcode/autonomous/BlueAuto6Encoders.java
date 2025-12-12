@@ -37,8 +37,8 @@ public class BlueAuto6Encoders extends LinearOpMode {
         List<Runnable> plan = new ArrayList<>();
 
         // Spin up flywheel
-        plan.add(() -> robot.updateFlywheelMotors(-0.75));
-
+        plan.add(() -> robot.updateFlywheelMotors(-0.99));
+        sleep(5000);
         // === STRAFE RIGHT ===
         plan.add(() -> robot.strafeEncoder(STRAFE_1, SPEED));
 
