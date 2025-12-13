@@ -14,7 +14,7 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
     private Robot robot;
 
     // distance estimates (adjust after real testing)
-    private static final double FLYWHEEL_POWER = 0.80;
+    private static final double FLYWHEEL_POWER = 0.75;
     private static final double STRAFE_1 = -25;
     private static final double TURN_1 = 4;
     private static final double TURN_2 = 2;
@@ -45,7 +45,8 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         // === BACK UP ===
         plan.add(() -> robot.updateFlywheelMotors(-0.95));
         plan.add(() -> robot.driveForwardEncoder(-35, SPEED));
-        plan.add(() -> robot.updateFlywheelMotors(-0.80));
+        plan.add(() -> robot.driveForwardEncoder(0.5,SPEED));
+        plan.add(() -> robot.updateFlywheelMotors(-0.82));
         plan.add(() -> sleep(500));
 
         // === SHOOT 3 BALLS ===
@@ -69,28 +70,43 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         //plan.add(() -> robot.strafeEncoder(2, SPEED));
         //plan.add(() -> robot.turnEncoder(-2, SPEED)); // turn
         plan.add(() -> robot.updateIntakeMotors(1));  // intake on
-        plan.add(() -> robot.driveForwardEncoder(FWD_INTAKE, 0.3)); // go forward
-        plan.add(() -> sleep(1000));
+        plan.add(() -> robot.driveForwardEncoder(FWD_INTAKE, 0.80)); // go forward
+        plan.add(() -> sleep(650));
         plan.add(() -> robot.driveForwardEncoder(BACK_UP, SPEED));    // back up
         plan.add(() -> robot.updateIntakeMotors(0));
 
         // === STRAFE BACK ===
         plan.add(() -> robot.turnEncoder(-TURN_1,SPEED));
-        plan.add(() -> robot.driveForwardEncoder(10,SPEED));
+        plan.add(() -> robot.driveForwardEncoder(9,SPEED));
 
-        // === SHOOT SECOND 3 ===
+        // === SHOOT 2nd ===
         plan.add(this::shootOne);
         plan.add(this::loadOne);
         plan.add(this::shootOne);
         plan.add(this::loadOne);
         plan.add(this::shootOne);
+        // move to 3rd
         plan.add(() -> robot.feedStop());
         plan.add(() -> robot.turnEncoder(3,SPEED));
-        plan.add(() -> robot.strafeEncoder(30,SPEED));
-        plan.add(() -> robot.turnEncoder(-2,SPEED));
+        plan.add(() -> robot.strafeEncoder(32,SPEED));
+        plan.add(() -> robot.turnEncoder(-1.8,SPEED));
+        // 3rd set
         plan.add(() -> robot.updateIntakeMotors(1));
-        plan.add(() -> robot.driveForwardEncoder(25,0.3));
-        plan.add(() -> sleep(3000));
+        plan.add(() -> robot.driveForwardEncoder(38,0.75));
+        plan.add(() -> sleep(900));
+        plan.add(() -> robot.updateIntakeMotors(0));
+        plan.add(() -> robot.driveForwardEncoder(-32,SPEED));
+        // pos to shoot
+        //plan.add(() -> robot.turnEncoder(2,SPEED));
+        plan.add(() -> robot.strafeEncoder(-32,SPEED));
+        plan.add(() -> robot.turnEncoder(-1,SPEED));
+        //plan.add(() -> robot.driveForwardEncoder(10,SPEED));
+        // shoot 3rd
+        plan.add(this::shootOne);
+        plan.add(this::loadOne);
+        plan.add(this::shootOne);
+        plan.add(this::loadOne);
+        plan.add(this::shootOne);
 
         // === shutdown ===
         plan.add(() -> {
@@ -115,18 +131,18 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         robot.updateIntakeMotors(1);
         sleep(500);
         robot.updateIntakeMotors(0);
-        sleep(250);
+        sleep(100);
     }
     private void shootOne() {
-        sleep(250);
+        sleep(100);
         robot.updateFlyFeedMotor(1);
-        sleep(500);
+        sleep(250);
         robot.updateFlyFeedMotor(0);
-        sleep(500);
+        sleep(150);
     }
 
     private void spinUp() {
         robot.updateFlywheelMotors(-1);
-        sleep(3000);
+        sleep(2700);
     }
 }
