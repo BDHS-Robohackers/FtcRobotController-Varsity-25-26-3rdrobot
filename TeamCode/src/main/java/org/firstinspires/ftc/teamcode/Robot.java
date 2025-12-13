@@ -71,11 +71,11 @@ public class Robot {
 
     public void driveForwardEncoder(double inches, double speed) {
         resetDriveEncoders();
-        int move = (int) (inches * TICKS_PER_INCH);
+        int move = (int)(inches * TICKS_PER_INCH);
 
         leftFrontDrive.setTargetPosition(-move);
-        rightFrontDrive.setTargetPosition(move);
         leftBackDrive.setTargetPosition(-move);
+        rightFrontDrive.setTargetPosition(move);
         rightBackDrive.setTargetPosition(move);
 
         runToPosMode();
@@ -85,15 +85,35 @@ public class Robot {
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
 
-        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() ||
-                leftBackDrive.isBusy() || rightBackDrive.isBusy()) {}
+        while (true) {
+
+            int lfErr = Math.abs(leftFrontDrive.getTargetPosition() - leftFrontDrive.getCurrentPosition());
+            int lbErr = Math.abs(leftBackDrive.getTargetPosition() - leftBackDrive.getCurrentPosition());
+            int rfErr = Math.abs(rightFrontDrive.getTargetPosition() - rightFrontDrive.getCurrentPosition());
+            int rbErr = Math.abs(rightBackDrive.getTargetPosition() - rightBackDrive.getCurrentPosition());
+
+            // 🎯 Break early once the robot is basically there
+            if (lfErr < 20 && lbErr < 20 && rfErr < 20 && rbErr < 20) {
+                break;
+            }
+
+            // Normal break when no motors report busy
+            if (!(leftFrontDrive.isBusy() ||
+                    leftBackDrive.isBusy() ||
+                    rightFrontDrive.isBusy() ||
+                    rightBackDrive.isBusy())) {
+                break;
+            }
+        }
 
         stopDriving();
     }
 
+
     public void strafeEncoder(double inches, double speed) {
         resetDriveEncoders();
-        int move = (int) (inches * TICKS_PER_INCH);
+
+        int move = (int)(inches * TICKS_PER_INCH);
 
         leftFrontDrive.setTargetPosition(move);
         rightFrontDrive.setTargetPosition(move);
@@ -107,15 +127,34 @@ public class Robot {
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
 
-        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() ||
-                leftBackDrive.isBusy() || rightBackDrive.isBusy()) {}
+        while (true) {
+
+            int lfErr = Math.abs(leftFrontDrive.getTargetPosition() - leftFrontDrive.getCurrentPosition());
+            int rfErr = Math.abs(rightFrontDrive.getTargetPosition() - rightFrontDrive.getCurrentPosition());
+            int lbErr = Math.abs(leftBackDrive.getTargetPosition() - leftBackDrive.getCurrentPosition());
+            int rbErr = Math.abs(rightBackDrive.getTargetPosition() - rightBackDrive.getCurrentPosition());
+
+            // 🎯 Break early when all motors are basically at the target
+            if (lfErr < 20 && rfErr < 20 && lbErr < 20 && rbErr < 20) {
+                break;
+            }
+
+            // Otherwise, stop once none of the motors report busy
+            if (!(leftFrontDrive.isBusy() ||
+                    rightFrontDrive.isBusy() ||
+                    leftBackDrive.isBusy() ||
+                    rightBackDrive.isBusy())) {
+                break;
+            }
+        }
 
         stopDriving();
     }
 
+
     public void turnEncoder(double inches, double speed) {
         resetDriveEncoders();
-        int move = (int) (inches * TICKS_PER_INCH);
+        int move = (int)(inches * TICKS_PER_INCH);
 
         leftFrontDrive.setTargetPosition(-move);
         leftBackDrive.setTargetPosition(-move);
@@ -129,11 +168,30 @@ public class Robot {
         rightFrontDrive.setPower(speed);
         rightBackDrive.setPower(speed);
 
-        while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() ||
-                leftBackDrive.isBusy() || rightBackDrive.isBusy()) {}
+        while (true) {
+
+            int lfErr = Math.abs(leftFrontDrive.getTargetPosition() - leftFrontDrive.getCurrentPosition());
+            int lbErr = Math.abs(leftBackDrive.getTargetPosition() - leftBackDrive.getCurrentPosition());
+            int rfErr = Math.abs(rightFrontDrive.getTargetPosition() - rightFrontDrive.getCurrentPosition());
+            int rbErr = Math.abs(rightBackDrive.getTargetPosition() - rightBackDrive.getCurrentPosition());
+
+            // 🚀 Break early once motors are basically at the target
+            if (lfErr < 20 && lbErr < 20 && rfErr < 20 && rbErr < 20) {
+                break;
+            }
+
+            // Normal exit condition (if no motors are busy)
+            if (!(leftFrontDrive.isBusy() ||
+                    leftBackDrive.isBusy() ||
+                    rightFrontDrive.isBusy() ||
+                    rightBackDrive.isBusy())) {
+                break;
+            }
+        }
 
         stopDriving();
     }
+
 
     public void stopDriving() {
         leftFrontDrive.setPower(0);
