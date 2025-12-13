@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="Red Front 6-7 (ENCODERS V3)", group="Autonomous")
-public class RedAuto6EncodersRev3 extends LinearOpMode {
+@Autonomous(name="Blue Front 6-7 (ENCODERS V3)", group="Autonomous")
+public class BlueAuto6EncodersRev3 extends LinearOpMode {
 
     private Robot robot;
 
@@ -18,7 +18,7 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
     private static final double STRAFE_1 = -25;
     private static final double TURN_1 = 4;
     private static final double TURN_2 = 2;
-    private static final double FWD_INTAKE = 35;
+    private static final double FWD_INTAKE = 34;
     private static final double BACK_UP = -35;
     private static final double STRAFE_BACK = 14;
 
@@ -45,7 +45,7 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         // === BACK UP ===
         plan.add(() -> robot.updateFlywheelMotors(-0.95));
         plan.add(() -> robot.driveForwardEncoder(-35, SPEED));
-        plan.add(() -> robot.driveForwardEncoder(0.5,SPEED));
+        plan.add(() -> robot.driveForwardEncoder(0.1,SPEED));
         plan.add(() -> robot.updateFlywheelMotors(-0.82));
         plan.add(() -> sleep(500));
 
@@ -59,7 +59,7 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
 
         // === TURN RIGHT ===
         plan.add(() -> robot.driveForwardEncoder(-10,SPEED));
-        plan.add(() -> robot.turnEncoder(TURN_1, SPEED));
+        plan.add(() -> robot.turnEncoder(-TURN_1, SPEED));
 
 
 
@@ -76,7 +76,7 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         plan.add(() -> robot.updateIntakeMotors(0));
 
         // === STRAFE BACK ===
-        plan.add(() -> robot.turnEncoder(-TURN_1,SPEED));
+        plan.add(() -> robot.turnEncoder(TURN_1,SPEED));
         plan.add(() -> robot.driveForwardEncoder(9,SPEED));
 
         // === SHOOT 2nd ===
@@ -87,19 +87,19 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         plan.add(this::shootOne);
         // move to 3rd
         plan.add(() -> robot.feedStop());
-        plan.add(() -> robot.turnEncoder(3,SPEED));
-        plan.add(() -> robot.strafeEncoder(32,SPEED));
-        plan.add(() -> robot.turnEncoder(-1.5,SPEED));
+        plan.add(() -> robot.turnEncoder(-3,SPEED));
+        plan.add(() -> robot.strafeEncoder(-32,SPEED));
+        plan.add(() -> robot.turnEncoder(1.5,SPEED));
         // 3rd set
         plan.add(() -> robot.updateIntakeMotors(1));
-        plan.add(() -> robot.driveForwardEncoder(38,0.75));
+        plan.add(() -> robot.driveForwardEncoder(35,0.75));
         plan.add(() -> sleep(900));
         plan.add(() -> robot.updateIntakeMotors(0));
         plan.add(() -> robot.driveForwardEncoder(-32,SPEED));
         // pos to shoot
         //plan.add(() -> robot.turnEncoder(2,SPEED));
-        plan.add(() -> robot.strafeEncoder(-32,SPEED));
-        plan.add(() -> robot.turnEncoder(-2,SPEED));
+        plan.add(() -> robot.strafeEncoder(32,SPEED));
+        plan.add(() -> robot.turnEncoder(2,SPEED));
         //plan.add(() -> robot.driveForwardEncoder(10,SPEED));
         // shoot 3rd
         plan.add(this::shootOne);
