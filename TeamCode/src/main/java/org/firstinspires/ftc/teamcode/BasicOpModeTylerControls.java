@@ -2,14 +2,18 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "Driver Op Mode (Tyler's Controls)", group = "Driver Op Mode")
 public class BasicOpModeTylerControls extends LinearOpMode {
 
     /** @noinspection FieldMayBeFinal*/
     private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime intervalTime = new ElapsedTime();
     private Robot robot;
 
     private Gamepad driverController;
@@ -23,6 +27,53 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     private double axial = 0;
     private double lateral = 0;
     private double yaw = 0;
+
+    public static double TARGET_FLY_SPEED = 360; // Degrees per second
+
+    public static double flyKP = 0.01; // Proportion
+    public static double flyKI = 0.0; // Integral
+    public static double flyKD = 0.0; // Derivative
+
+    public static double flyKF = 0.0001; // Feed forward; Find by taking POWER/SPEED
+
+    public static double MAX_INTEGRAL = 5000.0; // May need to adjust as needed
+    public static double MIN_INTEGRAL = -5000.0; // May need to adjust as needed
+
+    private double flySpeedErrorPrev = 0.0;
+    private double flyIntegral = 0.0;
+
+    private boolean resetPidTimer = false;
+
+    /**
+     * Updates the fly wheel based on a simple PID loop
+     */
+    public void flyWheelLoop() {
+        if ((intervalTime.seconds() > 2) || resetPidTimer) {
+            resetPidTimer = false;
+            intervalTime.reset(); // Too much time has elapsed; reset timer and wait for next loop.
+            return;
+        }
+        final double dt = intervalTime.milliseconds() / 1000.0; // Last Interval time in seconds
+        final double speed = ((DcMotorEx) robot.fly).getVelocity(AngleUnit.DEGREES);
+
+        final double error = TARGET_FLY_SPEED - speed;
+
+        final double feedForward = flyKF * TARGET_FLY_SPEED;
+
+        flyIntegral += error * dt;
+        flyIntegral = Math.max(MIN_INTEGRAL, Math.min(MAX_INTEGRAL, flyIntegral));
+
+        final double derivative = (error - flySpeedErrorPrev) / dt;
+        final double rawOutput = feedForward + (flyKP * error) + (flyKI * flyIntegral) + (flyKD * derivative);
+
+        final double output = Math.max(-1.0, Math.min(1.0, rawOutput));
+
+        robot.fly.setPower(output);
+
+        flySpeedErrorPrev = error;
+
+        intervalTime.reset(); // Reset timer to get interval time
+    }
 
     @Override
     public void runOpMode() {
@@ -78,6 +129,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         // variable control based on buttons pushed
         if (otherController.right_bumper) {
             flywheelControl = 0;
+            resetPidTimer = true;
         } else if (otherController.x) {
             flywheelControl = 0.75;
         } else if (otherController.b) {
@@ -105,7 +157,8 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         }
 
         if (flywheelControl != 0) {
-            robot.updateFlywheelMotors(flywheelControl);  // variable speed on flywheel depending on button
+            flyWheelLoop(); // Variable speed not needed anymore
+//            robot.updateFlywheelMotors(flywheelControl);  // variable speed on flywheel depending on button
         } else {
             robot.updateFlyFeedMotor(0.0f);
             robot.updateFlywheelMotors(0.0f);  // Stop flywheel
