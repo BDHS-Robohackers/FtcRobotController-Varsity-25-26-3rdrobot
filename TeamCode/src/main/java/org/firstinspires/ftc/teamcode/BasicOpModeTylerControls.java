@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -9,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+@Config
 @TeleOp(name = "Driver Op Mode (Tyler's Controls)", group = "Driver Op Mode")
 public class BasicOpModeTylerControls extends LinearOpMode {
 
@@ -31,6 +34,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     // 200 - MAX
     public static double TARGET_FLY_SPEED = 195; // Degrees per second
+    public static double CLOSE_TARGET_FLY_SPEED = 160; // Degrees per second
     public static double TARGET_FLY_SPEED_THRESH = 13; // Degrees per second
 
     public static double flyKP = 0.10; // Proportion
@@ -42,8 +46,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     public static double MAX_INTEGRAL = 5000.0; // May need to adjust as needed
     public static double MIN_INTEGRAL = -5000.0; // May need to adjust as needed
 
-    private double flySpeedErrorPrev = 0.0;
-    private double flyIntegral = 0.0;
+    public double flySpeedErrorPrev = 0.0;
+    public double flyIntegral = 0.0;
+    public double setFlySpeed = TARGET_FLY_SPEED;
+    public double flySpeedModifier = 0.0f;
 
     private boolean resetPidTimer = false;
 
@@ -60,9 +66,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         final double dt = intervalTime.milliseconds() / 1000.0; // Last Interval time in seconds
         final double speed = ((DcMotorEx) robot.fly).getVelocity(AngleUnit.DEGREES);
 
-        final double error = TARGET_FLY_SPEED - speed;
+        final double error = setFlySpeed - speed;
 
-        final double feedForward = flyKF * TARGET_FLY_SPEED;
+        final double feedForward = flyKF * setFlySpeed;
 
         flyIntegral += error * dt;
         flyIntegral = Math.max(MIN_INTEGRAL, Math.min(MAX_INTEGRAL, flyIntegral));
@@ -70,7 +76,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         final double derivative = (error - flySpeedErrorPrev) / dt;
         final double rawOutput = feedForward + (flyKP * error) + (flyKI * flyIntegral) + (flyKD * derivative);
 
-        final double output = Math.max(-1.0, Math.min(1.0, rawOutput));
+        final double output = Math.max(0, Math.min(1.0, rawOutput)); // Min changed to 0 instead of -1
 
         telemetry.addData("Fly Power: ", output);
         telemetry.addData("Raw Power: ", rawOutput);
@@ -90,6 +96,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         robot = new Robot();
         robot.initialize(hardwareMap);
         robot.fly.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // Wait for the robot to start (driver presses PLAY).
         telemetry.addData("Status", "Initialized.");
@@ -147,12 +154,19 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             flywheelControl = 0.90;
         } else if (otherController.start) {
             if (!isTheButtonPressed) {
-                flywheelControl += 0.05;
+                flySpeedModifier += 5;
+                //flywheelControl += 0.05;
                 isTheButtonPressed = true;
             }
         } else if (otherController.back) {
             if (!isTheButtonPressed) {
-                flywheelControl -= 0.05;
+                flySpeedModifier -= 5;
+                // flywheelControl -= 0.05;
+                isTheButtonPressed = true;
+            }
+        }  else if (otherController.a) {
+            if (!isTheButtonPressed) {
+                flySpeedModifier = 0;
                 isTheButtonPressed = true;
             }
         } else {
@@ -161,7 +175,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         isYPressed = otherController.y;
         final double motorSpeed = ((DcMotorEx) robot.fly).getVelocity(AngleUnit.DEGREES);
-        boolean canShoot = motorSpeed > (TARGET_FLY_SPEED - TARGET_FLY_SPEED_THRESH);
+        boolean canShoot = motorSpeed > (setFlySpeed - TARGET_FLY_SPEED_THRESH);
 
         if (isYPressed && canShoot) {
             robot.updateFlyFeedMotor(1);
@@ -171,9 +185,12 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         if (flywheelControl != 0) {
             if (flywheelControl < 0.9) {
-                robot.updateFlywheelMotors(flywheelControl);  // variable speed on flywheel depending on button
+                setFlySpeed = CLOSE_TARGET_FLY_SPEED + flySpeedModifier;
+                flyWheelLoop();
             } else {
+                setFlySpeed = TARGET_FLY_SPEED + flySpeedModifier;
                 flyWheelLoop(); // Variable speed not needed anymore
+                // flyWheelLoop();
             }
         } else {
             resetPidTimer = true;
