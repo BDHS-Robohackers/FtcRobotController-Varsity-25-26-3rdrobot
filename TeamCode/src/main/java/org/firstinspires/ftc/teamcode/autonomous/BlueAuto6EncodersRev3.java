@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="Blue Front 6-7 (ENCODERS V3)", group="Autonomous")
+@Autonomous(name="!Blue Front 6-7 (ENCODERS V3)", group="Autonomous")
 public class BlueAuto6EncodersRev3 extends LinearOpMode {
 
     private Robot robot;
@@ -41,6 +41,7 @@ public class BlueAuto6EncodersRev3 extends LinearOpMode {
 
         // Spin up flywheel
         plan.add(this::spinUp);
+        plan.add(() -> robot.updateFrontIntakeMotors(1));
 
         // === BACK UP ===
         plan.add(() -> robot.updateFlywheelMotors(-0.95));

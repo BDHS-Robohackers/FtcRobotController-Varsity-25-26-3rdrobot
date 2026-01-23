@@ -25,8 +25,11 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     private double flywheelControl = 0;
     private double intakeControl = 0;
+    private double frontIntakeControl = 1;
     private boolean isTheButtonPressed = false;
     private boolean isYPressed = false;
+    private boolean isLBPressed = false;
+    private boolean isDrivingEnabled = true;
 
     private double axial = 0;
     private double lateral = 0;
@@ -135,11 +138,22 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     // Update driving controls (tank drive or similar).
     private void updateDrive() {
-        axial = (1.0 * driverController.left_stick_y); // FWD/REV
-        yaw = (1.0 * driverController.right_stick_x); // Rotate
-        lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
 
-        robot.updateDriveMotors(axial, lateral, yaw);
+        isDrivingEnabled = !driverController.a;
+
+        if (isDrivingEnabled) {
+            axial = (1.0 * driverController.left_stick_y); // FWD/REV
+            yaw = (1.0 * driverController.right_stick_x); // Rotate
+            lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
+            robot.updateDriveMotors(axial, lateral, yaw);
+        } else {
+            axial = 0;
+            lateral = 0;
+            yaw = 0;
+            robot.lockWheels();
+        }
+
+
     }
 
     // Update flywheel motors based on X and B button presses
@@ -201,13 +215,28 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     private void updateIntake() {
         if (otherController.dpad_up) {
-            intakeControl = 1;
-        } else if (otherController.dpad_down) {
             intakeControl = -1;
+        } else if (otherController.dpad_down) {
+            intakeControl = 1;
         } else {
             intakeControl = 0;
         }
+
+        if (otherController.left_bumper) {
+            if (!isLBPressed) {
+                if (frontIntakeControl == 1) {
+                    frontIntakeControl = 0;
+                } else {
+                    frontIntakeControl = 1;
+                }
+                isLBPressed = true;
+            }
+        } else {
+            isLBPressed = false;
+        }
+
         robot.updateIntakeMotors(intakeControl);
+        robot.updateFrontIntakeMotors(frontIntakeControl);
     }
 
     // Update Ethan servo based on D-pad input
