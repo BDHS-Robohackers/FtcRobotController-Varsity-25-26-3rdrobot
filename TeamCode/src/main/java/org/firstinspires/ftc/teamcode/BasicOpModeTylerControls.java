@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
 @TeleOp(name = "Driver Op Mode (Tyler's Controls)", group = "Driver Op Mode")
@@ -55,6 +56,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     public double flySpeedModifier = 0.0f;
 
     private boolean resetPidTimer = false;
+    public double flyCurrent = 0;
 
     /**
      * Updates the fly wheel based on a simple PID loop
@@ -130,6 +132,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             telemetry.addData("Integral: ", flyIntegral);
             telemetry.addData("Fly Vel (Deg/s): ", ((DcMotorEx) robot.fly).getVelocity(AngleUnit.DEGREES));
             telemetry.addData("Error prev: ", flySpeedErrorPrev);
+            telemetry.addData("flywheel current : ",flyCurrent);
             // Update Ethan servo control based on D-pad input
 
             telemetry.update();
@@ -189,6 +192,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         isYPressed = otherController.y;
         final double motorSpeed = ((DcMotorEx) robot.fly).getVelocity(AngleUnit.DEGREES);
+        flyCurrent = ((DcMotorEx) robot.fly).getCurrent(CurrentUnit.MILLIAMPS);
         boolean canShoot = motorSpeed > (setFlySpeed - TARGET_FLY_SPEED_THRESH);
 
         if (isYPressed && canShoot) {

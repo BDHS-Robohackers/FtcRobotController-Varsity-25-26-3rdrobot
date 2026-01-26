@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -85,6 +87,8 @@ public class RedFarAuto6EncodersRev3 extends LinearOpMode {
 
         robot = new Robot();
         robot.initialize(hardwareMap);
+        robot.fly.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         telemetry.addLine("AUTO READY (ENCODERS)");
         telemetry.update();
@@ -104,7 +108,7 @@ public class RedFarAuto6EncodersRev3 extends LinearOpMode {
         //plan.add(() -> robot.driveForwardEncoder(-35, SPEED));
         //plan.add(() -> robot.driveForwardEncoder(0.5,SPEED));
 //        plan.add(() -> robot.updateFlywheelMotors(-0.82));
-        plan.add(() -> sleep(500));
+        plan.add(() -> sleep(3500));
 
         // === SHOOT 3 BALLS ===
         plan.add(this::shootOne);
