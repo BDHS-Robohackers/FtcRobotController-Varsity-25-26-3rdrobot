@@ -17,6 +17,7 @@ public class Robot {
     public DcMotor fly;
     public DcMotor feedFly;
     public DcMotor intake;
+    public DcMotor frontIntake;
 
     public Robot() {}
 
@@ -41,7 +42,10 @@ public class Robot {
             rightBackDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
             fly = hardwareMap.get(DcMotor.class, "fly");
             intake = hardwareMap.get(DcMotor.class, "intake");
+            frontIntake = hardwareMap.get(DcMotor.class, "frontIntake");
             feedFly = hardwareMap.get(DcMotor.class, "feedFly");
+
+
         } catch (Exception e) {
             Log.e(TAG, "Error initializing hardware", e);
         }
@@ -249,9 +253,11 @@ public class Robot {
         feedFly.setPower(0);
     }
     public void updateIntakeMotors(double power) {
-        intake.setPower(1 * power);
+        intake.setPower(-1 * power);
     }
-
+    public void updateFrontIntakeMotors(double power) {
+        frontIntake.setPower(-1 * power);
+    }
 
 
 

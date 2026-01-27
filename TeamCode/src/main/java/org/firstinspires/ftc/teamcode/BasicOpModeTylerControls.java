@@ -17,8 +17,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     private double flywheelControl = 0;
     private double intakeControl = 0;
+    private double frontIntakeControl = 1;
     private boolean isTheButtonPressed = false;
     private boolean isYPressed = false;
+    private boolean isLBPressed = false;
 
     private double axial = 0;
     private double lateral = 0;
@@ -114,13 +116,28 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     private void updateIntake() {
         if (otherController.dpad_up) {
-            intakeControl = 1;
-        } else if (otherController.dpad_down) {
             intakeControl = -1;
+        } else if (otherController.dpad_down) {
+            intakeControl = 1;
         } else {
             intakeControl = 0;
         }
+
+        if (otherController.left_bumper) {
+            if (!isLBPressed) {
+                if (frontIntakeControl == 1) {
+                    frontIntakeControl = -1;
+                } else {
+                    frontIntakeControl = 1;
+                }
+                isLBPressed = true;
+            }
+        } else {
+            isLBPressed = false;
+        }
+
         robot.updateIntakeMotors(intakeControl);
+        robot.updateFrontIntakeMotors(frontIntakeControl);
     }
 
     // Update Ethan servo based on D-pad input
