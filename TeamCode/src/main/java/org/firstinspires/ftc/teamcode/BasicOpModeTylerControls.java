@@ -229,7 +229,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (otherController.left_bumper) {
             if (!isLBPressed) {
                 if (frontIntakeControl == 1) {
-                    frontIntakeControl = 0;
+                    frontIntakeControl = -1;
                 } else {
                     frontIntakeControl = 1;
                 }
