@@ -54,6 +54,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
+        robot.fly.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
         // Run until the end of the match (driver presses STOP or time runs out).
