@@ -216,7 +216,7 @@ public class Robot {
     public void updateDriveMotors(double axial, double lateral, double yaw) {
         double max;
 
-        double leftFrontPower = -axial + lateral + yaw;
+        double leftFrontPower = -(-axial + lateral + yaw);
         double rightFrontPower = axial + lateral + yaw;
         double leftBackPower = -axial - lateral + yaw;
         double rightBackPower = axial - lateral + yaw;
