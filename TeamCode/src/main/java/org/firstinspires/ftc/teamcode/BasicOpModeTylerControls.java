@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Driver Op Mode (Tyler's Controls)", group = "Driver Op Mode")
@@ -15,7 +17,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     private Gamepad driverController;
     private Gamepad otherController;
 
-    private double flywheelControl = 0;
+
     private double intakeControl = 0;
     private double frontIntakeControl = 1;
     private boolean isTheButtonPressed = false;
@@ -24,6 +26,11 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     private double axial = 0;
     private double lateral = 0;
     private double yaw = 0;
+
+    double P = 115;
+    double F = 15;
+    double targetFlywheelVelocity = 0;
+    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
 
     @Override
     public void runOpMode() {
@@ -48,12 +55,13 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        robot.fly.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         // Run until the end of the match (driver presses STOP or time runs out).
         while (opModeIsActive()) {
             updateDrive();
             updateFlywheel();
             updateIntake();
-            telemetry.addData("Flywheel %",flywheelControl*100);
+            telemetry.addData("Target Fly Vel : ",targetFlywheelVelocity);
             telemetry.addData("Intake %",intakeControl*100);
             telemetry.addData("Yaw (rotate) %", yaw);
             telemetry.addData("Axial (FW/RV) %", axial);
@@ -78,19 +86,19 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
         // variable control based on buttons pushed
         if (otherController.right_bumper) {
-            flywheelControl = 0;
+            targetFlywheelVelocity = 0;
         } else if (otherController.x) {
-            flywheelControl = 0.75;
+            targetFlywheelVelocity = 1400;
         } else if (otherController.b) {
-            flywheelControl = 0.90;
+            targetFlywheelVelocity = 1400;
         } else if (otherController.start) {
             if (!isTheButtonPressed) {
-                flywheelControl += 0.05;
+                targetFlywheelVelocity += 20;
                 isTheButtonPressed = true;
             }
         } else if (otherController.back) {
             if (!isTheButtonPressed) {
-                flywheelControl -= 0.05;
+                targetFlywheelVelocity -= 20;
                 isTheButtonPressed = true;
             }
         } else {
@@ -105,12 +113,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             robot.updateFlyFeedMotor(0);
         }
 
-        if (flywheelControl != 0) {
-            robot.updateFlywheelMotors(flywheelControl);  // variable speed on flywheel depending on button
-        } else {
-            robot.updateFlyFeedMotor(0.0f);
-            robot.updateFlywheelMotors(0.0f);  // Stop flywheel
-        }
+
     }
 
     private void updateIntake() {
