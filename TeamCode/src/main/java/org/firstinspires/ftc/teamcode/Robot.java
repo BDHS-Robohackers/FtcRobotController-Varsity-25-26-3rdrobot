@@ -245,6 +245,7 @@ public class Robot {
         fly.setPower(1 * power * FLY_WHEEL_MAX_THRESHOLD);
     }
 
+    @SuppressWarnings("unused")
     public void updateFlywheelMotorsOverrideMax(double power) {
         fly.setPower(1 * power);
     }

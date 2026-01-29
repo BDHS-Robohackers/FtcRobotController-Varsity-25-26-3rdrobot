@@ -19,7 +19,6 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     private double intakeControl = 0;
     private double frontIntakeControl = 1;
     private boolean isTheButtonPressed = false;
-    private boolean isYPressed = false;
     private boolean isLBPressed = false;
 
     private double axial = 0;
@@ -98,7 +97,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             isTheButtonPressed = false;
         }
 
-        isYPressed = otherController.y;
+        boolean isYPressed = otherController.y;
 
         if (isYPressed) {
             robot.updateFlyFeedMotor(1);

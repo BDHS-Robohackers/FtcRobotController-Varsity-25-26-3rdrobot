@@ -14,16 +14,13 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
     private Robot robot;
 
     // distance estimates (adjust after real testing)
-    private static final double FLYWHEEL_POWER = 0.75;
-    private static final double STRAFE_1 = -25;
     private static final double TURN_1 = 4;
-    private static final double TURN_2 = 2;
     private static final double FWD_INTAKE = 35;
     private static final double BACK_UP = -35;
-    private static final double STRAFE_BACK = 14;
 
     private static final double SPEED = 0.85;
 
+    @SuppressWarnings("RedundantThrows")
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -66,9 +63,6 @@ public class RedAuto6EncodersRev3 extends LinearOpMode {
         plan.add(() -> robot.feedStop());
 
         // === STRAFE + MOVE TO BALLS ===
-        //plan.add(() -> robot.turnEncoder(TURN_2, SPEED)); // undo turn
-        //plan.add(() -> robot.strafeEncoder(2, SPEED));
-        //plan.add(() -> robot.turnEncoder(-2, SPEED)); // turn
         plan.add(() -> robot.updateIntakeMotors(1));  // intake on
         plan.add(() -> robot.driveForwardEncoder(FWD_INTAKE, 0.80)); // go forward
         plan.add(() -> sleep(650));
