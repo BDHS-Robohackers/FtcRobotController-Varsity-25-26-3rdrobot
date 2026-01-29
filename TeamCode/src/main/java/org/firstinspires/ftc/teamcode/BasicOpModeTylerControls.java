@@ -55,9 +55,10 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.fly.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+
         // Run until the end of the match (driver presses STOP or time runs out).
         while (opModeIsActive()) {
+            robot.fly.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
             updateDrive();
             updateFlywheel();
             updateIntake();
