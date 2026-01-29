@@ -75,11 +75,22 @@ public class BasicOpModeTylerControls extends LinearOpMode {
 
     // Update driving controls (tank drive or similar).
     private void updateDrive() {
-        axial = (1.0 * driverController.left_stick_y); // FWD/REV
-        yaw = (1.0 * driverController.right_stick_x); // Rotate
-        lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
 
-        robot.updateDriveMotors(axial, lateral, yaw);
+        boolean isDrivingEnabled = !driverController.a;
+
+        if (isDrivingEnabled) {
+            axial = (1.0 * driverController.left_stick_y); // FWD/REV
+            yaw = (1.0 * driverController.right_stick_x); // Rotate
+            lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
+            robot.updateDriveMotors(axial, lateral, yaw);
+        } else {
+            axial = 0;
+            lateral = 0;
+            yaw = 0;
+            robot.lockWheels();
+        }
+
+
     }
 
     // Update flywheel motors based on X and B button presses

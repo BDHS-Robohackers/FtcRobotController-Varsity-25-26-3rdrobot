@@ -27,9 +27,7 @@ public class Robot {
     private static final double WHEEL_DIAMETER_INCHES = 3.77953; // 96mm wheels
     private static final double TICKS_PER_INCH =
             TICKS_PER_REV / (Math.PI * WHEEL_DIAMETER_INCHES);
-
-
-
+    private boolean wheelsLocked = false;
 
 
     // -------------------------------
@@ -210,16 +208,59 @@ public class Robot {
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void lockWheels() {
+        if (wheelsLocked) return; // don't run again if its locked
+
+        wheelsLocked = true;
+
+        int lfLockPos = leftFrontDrive.getCurrentPosition();
+        int rfLockPos = rightFrontDrive.getCurrentPosition();
+        int lbLockPos = leftBackDrive.getCurrentPosition();
+        int rbLockPos = rightBackDrive.getCurrentPosition();
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftFrontDrive.setTargetPosition(lfLockPos);
+        rightFrontDrive.setTargetPosition(rfLockPos);
+        leftBackDrive.setTargetPosition(lbLockPos);
+        rightBackDrive.setTargetPosition(rbLockPos);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(0.15);
+        rightFrontDrive.setPower(0.15);
+        leftBackDrive.setPower(0.15);
+        rightBackDrive.setPower(0.15);
+    }
+
+
     // -------------------------------
     // 🛞 FLYWHEEL + FEEDER + INTAKE
     // -------------------------------
     public void updateDriveMotors(double axial, double lateral, double yaw) {
+        wheelsLocked = false;
         double max;
 
         double leftFrontPower = -(-axial + lateral + yaw);
         double rightFrontPower = axial + lateral + yaw;
         double leftBackPower = -axial - lateral + yaw;
         double rightBackPower = axial - lateral + yaw;
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
