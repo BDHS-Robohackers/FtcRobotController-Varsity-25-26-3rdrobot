@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 @TeleOp(name = "Driver Op Mode (Tyler's Controls)", group = "Driver Op Mode")
 public class BasicOpModeTylerControls extends LinearOpMode {
 
@@ -26,6 +28,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     private double axial = 0;
     private double lateral = 0;
     private double yaw = 0;
+    public static double TARGET_FLY_SPEED_THRESH = 60;
+    public double flyCurrent = 0;
+    public double currentFlywheelVelocity = 0;
 
     double P = 115;
     double F = 15;
@@ -65,10 +70,12 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             updateFlywheel();
             updateIntake();
             telemetry.addData("Target Fly Vel : ",targetFlywheelVelocity);
+            telemetry.addData("Current Fly Vel : ",currentFlywheelVelocity);
             telemetry.addData("Intake %",intakeControl*100);
             telemetry.addData("Yaw (rotate) %", yaw);
             telemetry.addData("Axial (FW/RV) %", axial);
             telemetry.addData("Lateral (Strafe) %", lateral);
+            telemetry.addData("flywheel current : ",flyCurrent);
             // Update Ethan servo control based on D-pad input
 
             telemetry.update();
@@ -102,7 +109,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (otherController.right_bumper) {
             targetFlywheelVelocity = 0;
         } else if (otherController.x) {
-            targetFlywheelVelocity = 1220;
+            targetFlywheelVelocity = 1160;
+        } else if (otherController.a) {
+            targetFlywheelVelocity = 1200;
         } else if (otherController.b) {
             targetFlywheelVelocity = 1500;
         } else if (otherController.start) {
@@ -120,8 +129,11 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         }
 
         boolean isYPressed = otherController.y;
+        currentFlywheelVelocity = -(robot.fly.getVelocity());
+        flyCurrent = robot.fly.getCurrent(CurrentUnit.MILLIAMPS);
+        boolean canShoot = ((currentFlywheelVelocity > (targetFlywheelVelocity - TARGET_FLY_SPEED_THRESH)) && (currentFlywheelVelocity < (targetFlywheelVelocity + TARGET_FLY_SPEED_THRESH)));
 
-        if (isYPressed) {
+        if (targetFlywheelVelocity > 0 && isYPressed && (canShoot || otherController.right_trigger > 0.25)) {
             robot.updateFlyFeedMotor(1);
         } else {
             robot.updateFlyFeedMotor(0);
