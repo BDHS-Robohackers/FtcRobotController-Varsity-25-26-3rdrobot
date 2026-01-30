@@ -127,6 +127,8 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         }
 
 
+
+        robot.fly.setVelocity(-targetFlywheelVelocity);
     }
 
     private void updateIntake() {
