@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -55,6 +56,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         waitForStart();
         runtime.reset();
         robot.fly.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        robot.fly.setDirection(DcMotorEx.Direction.REVERSE);
 
 
         // Run until the end of the match (driver presses STOP or time runs out).
@@ -101,9 +103,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (otherController.right_bumper) {
             targetFlywheelVelocity = 0;
         } else if (otherController.x) {
-            targetFlywheelVelocity = 1400;
+            targetFlywheelVelocity = 1220;
         } else if (otherController.b) {
-            targetFlywheelVelocity = 1400;
+            targetFlywheelVelocity = 1500;
         } else if (otherController.start) {
             if (!isTheButtonPressed) {
                 targetFlywheelVelocity += 20;
