@@ -128,6 +128,8 @@ public class BlueAuto6EncodersRev3 extends LinearOpMode {
         plan.add(this::shootOne);
         plan.add(this::loadOne);
         plan.add(this::shootOne);
+        plan.add(this::loadOne);
+        plan.add(this::shootOne);
         plan.add(() -> robot.strafeEncoder(-20,SPEED));
         plan.add(() -> robot.turnEncoder(-12,SPEED));
         // === shutdown ===
