@@ -90,7 +90,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (isDrivingEnabled) {
             axial = (1.0 * driverController.left_stick_y); // FWD/REV
             yaw = (1.0 * driverController.right_stick_x); // Rotate
-            lateral = (0.6 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
+            lateral = (1.0 * (driverController.left_trigger - driverController.right_trigger)); // Strafing
             robot.updateDriveMotors(axial, lateral, yaw);
         } else {
             axial = 0;
