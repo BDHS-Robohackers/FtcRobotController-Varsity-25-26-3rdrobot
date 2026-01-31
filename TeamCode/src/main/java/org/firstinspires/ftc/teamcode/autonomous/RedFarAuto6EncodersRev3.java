@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="!Red Far 6-7 (ENCODERS V3)", group="Autonomous")
+@Autonomous(name="Red Far 6-7 (ENCODERS V3)", group="Autonomous")
 public class RedFarAuto6EncodersRev3 extends LinearOpMode {
 
     private Robot robot;
