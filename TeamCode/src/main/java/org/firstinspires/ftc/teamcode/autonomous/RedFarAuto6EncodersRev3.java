@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="Red Far 6-7 (ENCODERS V3)", group="Autonomous")
+@Autonomous(name="[DO NOT USE!] Red Far Auto (ENCODERS V3)", group="Autonomous")
 public class RedFarAuto6EncodersRev3 extends LinearOpMode {
 
     private Robot robot;
@@ -51,7 +50,7 @@ public class RedFarAuto6EncodersRev3 extends LinearOpMode {
         }
 
         final double dt = intervalTime.milliseconds() / 1000.0; // Last Interval time in seconds
-        final double speed = ((DcMotorEx) robot.fly).getVelocity(AngleUnit.DEGREES);
+        final double speed = robot.fly.getVelocity(AngleUnit.DEGREES);
 
         final double error = TARGET_FLY_SPEED - speed;
 
@@ -101,7 +100,7 @@ public class RedFarAuto6EncodersRev3 extends LinearOpMode {
         // === don't BACK UP ===
         plan.add(() -> sleep(3500));
 
-        // === SHOOT 3 BALLS ===
+        // === SHOOT 1st 3 BALLS ===
         plan.add(this::shootOne);
         plan.add(this::loadOne);
         plan.add(this::shootOne);

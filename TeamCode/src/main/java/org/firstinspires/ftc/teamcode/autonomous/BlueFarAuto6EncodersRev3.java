@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,17 +13,16 @@ import org.firstinspires.ftc.teamcode.Robot;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="Blue Close 9 (ENCODERS V3)", group="Autonomous")
-public class BlueAuto6EncodersRev3 extends LinearOpMode {
+@Autonomous(name="Blue Far 3-5 (ENCODERS V3)", group="Autonomous")
+public class BlueFarAuto6EncodersRev3 extends LinearOpMode {
 
     private Robot robot;
 
     // distance estimates (adjust after real testing)
-    private static final double TURN_1 = 3.25;
-    private static final double FWD_INTAKE = 32;
-    private static final double BACK_UP = -35;
+    private static final double FWD_INTAKE = 42;
+    private static final double BACK_UP = -42;
 
-    private static final double SPEED = 0.70;
+    private static final double SPEED = 0.65;
 
     @SuppressWarnings("unused")
     public static double TARGET_FLY_SPEED_THRESH = 60;
@@ -67,12 +65,8 @@ public class BlueAuto6EncodersRev3 extends LinearOpMode {
 
         // Spin up flywheel
         plan.add(this::spinUp);
-        plan.add(() -> sleep(100));
+        plan.add(() -> sleep(3250));
 
-        // === BACK UP ===
-        plan.add(() -> robot.driveForwardEncoder(-35, SPEED));
-        //plan.add(() -> robot.driveForwardEncoder(0.5,SPEED));
-        plan.add(() -> sleep(500));
 
         // === SHOOT 1st 3 BALLS ===
         plan.add(this::shootOne);
@@ -82,26 +76,23 @@ public class BlueAuto6EncodersRev3 extends LinearOpMode {
         plan.add(this::shootOne);
 
 
-        // === Move to 2nd balls ===
-        plan.add(() -> robot.driveForwardEncoder(-9,SPEED));
-        plan.add(() -> robot.turnEncoder(-TURN_1, SPEED));
-
-
+        // === Move out of shooting zone (to 2nd set) ===
+        plan.add(() -> robot.driveForwardEncoder(4,SPEED));
+        plan.add(() -> robot.turnEncoder(-6,SPEED));
 
         plan.add(() -> robot.feedStop());
 
         // === 2nd set ===
         plan.add(() -> robot.updateIntakeMotors(1));  // intake on
-        plan.add(() -> robot.driveForwardEncoder(FWD_INTAKE, 0.80)); // go forward
-
+        plan.add(() -> robot.driveForwardEncoder(FWD_INTAKE, 0.60)); // go forward
         plan.add(() -> sleep(650));
         plan.add(() -> robot.updateIntakeMotors(0));
         plan.add(() -> robot.driveForwardEncoder(BACK_UP, SPEED));    // back up
 
 
         // === STRAFE BACK ===
-        plan.add(() -> robot.turnEncoder(TURN_1,SPEED));
-        plan.add(() -> robot.driveForwardEncoder(9,SPEED));
+        plan.add(() -> robot.turnEncoder(6,SPEED));
+        plan.add(() -> robot.driveForwardEncoder(-4,SPEED));
 
         // === SHOOT 2nd ===
         plan.add(this::shootOne);
@@ -109,34 +100,12 @@ public class BlueAuto6EncodersRev3 extends LinearOpMode {
         plan.add(this::shootOne);
         plan.add(this::loadOne);
         plan.add(this::shootOne);
-        // move to 3rd
+        // move out
         plan.add(() -> robot.feedStop());
-        plan.add(() -> robot.turnEncoder(-3,SPEED));
-        plan.add(() -> robot.strafeEncoder(-30.5,SPEED));
-        plan.add(() -> robot.turnEncoder(-1.5,SPEED));
-        // 3rd set
-        plan.add(() -> robot.updateIntakeMotors(1));
-        plan.add(() -> robot.driveForwardEncoder(32,0.55));
+        plan.add(() -> robot.driveForwardEncoder(9,SPEED));
+        plan.add(() -> robot.turnEncoder(-4,SPEED));
+        plan.add(() -> robot.driveForwardEncoder(9,SPEED));
 
-        plan.add(() -> sleep(650));
-        plan.add(() -> robot.updateIntakeMotors(0));
-        plan.add(() -> sleep(900));
-        plan.add(() -> robot.driveForwardEncoder(-33,SPEED));
-        // pos to shoot
-        //plan.add(() -> robot.turnEncoder(2,SPEED));
-        plan.add(() -> robot.strafeEncoder(32,SPEED));
-        plan.add(() -> robot.turnEncoder(4,SPEED));
-        //plan.add(() -> robot.driveForwardEncoder(10,SPEED));
-        // shoot 3rd
-        plan.add(this::shootOne);
-        plan.add(this::loadOne);
-        plan.add(this::shootOne);
-        plan.add(this::loadOne);
-        plan.add(this::shootOne);
-        plan.add(this::loadOne);
-        plan.add(this::shootOne);
-        plan.add(() -> robot.strafeEncoder(-20,SPEED));
-        plan.add(() -> robot.turnEncoder(-12,SPEED));
         // === shutdown ===
         plan.add(() -> {
             targetFlywheelVelocity = 0;
@@ -172,6 +141,6 @@ public class BlueAuto6EncodersRev3 extends LinearOpMode {
     }
 
     private void spinUp() {
-        targetFlywheelVelocity = 1100;
+        targetFlywheelVelocity = 1490;
     }
 }
