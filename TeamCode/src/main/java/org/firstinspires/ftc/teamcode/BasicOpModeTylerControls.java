@@ -32,7 +32,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     public double flyCurrent = 0;
     public double currentFlywheelVelocity = 0;
 
-    double P = 115;
+    double P = 125;
     double I = 0;
     double D = 0;
     double F = 15;
