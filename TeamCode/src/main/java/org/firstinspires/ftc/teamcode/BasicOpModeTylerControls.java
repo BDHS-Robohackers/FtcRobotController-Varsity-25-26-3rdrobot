@@ -33,9 +33,11 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     public double currentFlywheelVelocity = 0;
 
     double P = 115;
+    double I = 0;
+    double D = 0;
     double F = 15;
     double targetFlywheelVelocity = 0;
-    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
+    PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,I,D,F);
 
     @Override
     public void runOpMode() {
