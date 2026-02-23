@@ -5,6 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Robot {
 
@@ -19,6 +20,8 @@ public class Robot {
     public DcMotor feedFly;
     public DcMotor intake;
     public DcMotor frontIntake;
+    public Servo rightLift;
+    public Servo leftLift;
 
     public Robot() {}
 
@@ -43,6 +46,8 @@ public class Robot {
             intake = hardwareMap.get(DcMotor.class, "intake");
             frontIntake = hardwareMap.get(DcMotor.class, "frontIntake");
             feedFly = hardwareMap.get(DcMotor.class, "feedFly");
+            rightLift = hardwareMap.get(Servo.class,"rightLift");
+            leftLift = hardwareMap.get(Servo.class,"leftLift");
 
 
         } catch (Exception e) {

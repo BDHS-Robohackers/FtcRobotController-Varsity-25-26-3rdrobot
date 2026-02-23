@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.OTOSLocalizer;
@@ -70,6 +69,11 @@ public final class TuningOpModes {
 
     private static PinpointView makePinpointView(PinpointLocalizer pl) {
         return new PinpointView() {
+            @Override
+            public float getHeadingVelocity() {
+                return 0;
+            }
+
             GoBildaPinpointDriver.EncoderDirection parDirection = pl.initialParDirection;
             GoBildaPinpointDriver.EncoderDirection perpDirection = pl.initialPerpDirection;
 
@@ -88,10 +92,6 @@ public final class TuningOpModes {
                 return pl.driver.getEncoderY();
             }
 
-            @Override
-            public float getHeadingVelocity(UnnormalizedAngleUnit unit) {
-                return (float) pl.driver.getHeadingVelocity(unit);
-            }
 
             @Override
             public void setParDirection(@NonNull DcMotorSimple.Direction direction) {

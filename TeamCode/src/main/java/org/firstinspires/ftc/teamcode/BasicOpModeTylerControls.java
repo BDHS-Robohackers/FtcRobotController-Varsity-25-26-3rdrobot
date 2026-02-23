@@ -39,6 +39,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     double targetFlywheelVelocity = 0;
     PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,I,D,F);
 
+
     @Override
     public void runOpMode() {
         driverController = gamepad1;
@@ -78,6 +79,8 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             telemetry.addData("Axial (FW/RV) %", axial);
             telemetry.addData("Lateral (Strafe) %", lateral);
             telemetry.addData("flywheel current : ",flyCurrent);
+            telemetry.addData("left lift pos : ",robot.leftLift.getPosition());
+            telemetry.addData("right lift pos : ",robot.rightLift.getPosition());
             // Update Ethan servo control based on D-pad input
 
             telemetry.update();
@@ -87,7 +90,7 @@ public class BasicOpModeTylerControls extends LinearOpMode {
     // Update driving controls (tank drive or similar).
     private void updateDrive() {
 
-        boolean isDrivingEnabled = !driverController.a;
+        boolean isDrivingEnabled = !driverController.right_bumper;
 
         if (isDrivingEnabled) {
             axial = (1.0 * driverController.left_stick_y); // FWD/REV
@@ -166,6 +169,14 @@ public class BasicOpModeTylerControls extends LinearOpMode {
             }
         } else {
             isLBPressed = false;
+        }
+
+        if (driverController.y) {
+            robot.leftLift.setPosition(0);
+            robot.rightLift.setPosition(1);
+        } else {
+            robot.leftLift.setPosition(1);
+            robot.rightLift.setPosition(0);
         }
 
         robot.updateIntakeMotors(intakeControl);
