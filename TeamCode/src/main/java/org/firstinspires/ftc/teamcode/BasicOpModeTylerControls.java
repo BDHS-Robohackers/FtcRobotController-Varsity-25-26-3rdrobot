@@ -114,9 +114,9 @@ public class BasicOpModeTylerControls extends LinearOpMode {
         if (otherController.right_bumper) {
             targetFlywheelVelocity = 0;
         } else if (otherController.x) {
-            targetFlywheelVelocity = 1160;
+            targetFlywheelVelocity = 1080;
         } else if (otherController.a) {
-            targetFlywheelVelocity = 1200;
+            targetFlywheelVelocity = 1240;
         } else if (otherController.b) {
             targetFlywheelVelocity = 1500;
         } else if (otherController.start) {
