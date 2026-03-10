@@ -1,43 +1,28 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
-import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
-
-import com.acmerobotics.roadrunner.Trajectory;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-
-import org.firstinspires.ftc.teamcode.Robot;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 
-// RR-specific imports
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-
-// Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name="Red Close 9 (RR)", group="Autonomous")
-public class RedAuto9EncodersRR extends LinearOpMode {
+@Autonomous(name="Blue Close 9 (RR)", group="Autonomous")
+public class BlueAuto9EncodersRR extends LinearOpMode {
 
     public class intake {
         private DcMotor intake;
@@ -54,7 +39,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action startIntake() {
-            return new intake.startIntake();
+            return new startIntake();
         }
         public class stopIntake implements Action {
             @Override
@@ -64,7 +49,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action stopIntake() {
-            return new intake.stopIntake();
+            return new stopIntake();
         }
         public class reverseIntake implements Action {
             @Override
@@ -74,7 +59,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action reverseIntake() {
-            return new intake.reverseIntake();
+            return new reverseIntake();
         }
     }
     public class flywheel {
@@ -98,7 +83,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action stopFlywheel() {
-            return new flywheel.stopFlywheel();
+            return new stopFlywheel();
         }
         public class flywheelClose implements Action {
             @Override
@@ -108,17 +93,17 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action flywheelClose() {
-            return new flywheel.flywheelClose();
+            return new flywheelClose();
         }
         public class flywheelMedium implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
-                flywheel.setVelocity(1200);
+                flywheel.setVelocity(1190);
                 return false;
             }
         }
         public Action flywheelMedium() {
-            return new flywheel.flywheelMedium();
+            return new flywheelMedium();
         }
         public class flywheelFar implements Action {
             @Override
@@ -128,7 +113,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action flywheelFar() {
-            return new flywheel.flywheelFar();
+            return new flywheelFar();
         }
     }
     public class intakeSystem {
@@ -154,7 +139,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action startFrontIntake() {
-            return new intakeSystem.startFrontIntake();
+            return new startFrontIntake();
         }
         public class stopFrontIntake implements Action {
             @Override
@@ -164,7 +149,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action stopFrontIntake() {
-            return new intakeSystem.stopFrontIntake();
+            return new stopFrontIntake();
         }
         public class reverseFrontIntake implements Action {
             @Override
@@ -174,7 +159,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
             }
         }
         public Action reverseFrontIntake() {
-            return new intakeSystem.reverseFrontIntake();
+            return new reverseFrontIntake();
         }
         public class shootOne implements Action {
             @Override
@@ -187,7 +172,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
                 return false;
             }
         }
-        public Action shootOne() { return new intakeSystem.shootOne();}
+        public Action shootOne() { return new shootOne();}
         public class loadOne implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
@@ -198,7 +183,7 @@ public class RedAuto9EncodersRR extends LinearOpMode {
                 return false;
             }
         }
-        public Action loadOne() { return new intakeSystem.loadOne();}
+        public Action loadOne() { return new loadOne();}
         public class shootThree implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
@@ -210,43 +195,44 @@ public class RedAuto9EncodersRR extends LinearOpMode {
                 return false;
             }
         }
-        public Action shootThree() { return new intakeSystem.shootThree();}
+        public Action shootThree() { return new shootThree();}
     }
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-42, 55.75, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(-42, -55.75, Math.toRadians(-90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         intake intake = new intake(hardwareMap);
         intakeSystem intakeSystem = new intakeSystem(hardwareMap);
         flywheel flywheel = new flywheel(hardwareMap);
 
         TrajectoryActionBuilder driveTo1 = drive.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-12,12),Math.toRadians(135))
+                .strafeToLinearHeading(new Vector2d(-12,-12),Math.toRadians(-140))
                 .waitSeconds(0.2);
 
 
 
-        TrajectoryActionBuilder driveToGet2 = drive.actionBuilder(new Pose2d(-12,12,(Math.toRadians(135))))
+        TrajectoryActionBuilder driveToGet2 = drive.actionBuilder(new Pose2d(-12,-12,(Math.toRadians(-140))))
                 //.turnTo(Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-12,13),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-12,58),Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-12,-13),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(-12,-60),Math.toRadians(-90));
 
-        TrajectoryActionBuilder driveTo2 = drive.actionBuilder(new Pose2d(-12,58,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-12,12),Math.toRadians(140))
+        TrajectoryActionBuilder driveTo2 = drive.actionBuilder(new Pose2d(-12,-60,Math.toRadians(-90)))
+                .strafeToLinearHeading(new Vector2d(-12,-12),Math.toRadians(-142))
                 .waitSeconds(0.2);
 
-        TrajectoryActionBuilder driveToGet3 = drive.actionBuilder(new Pose2d(-12,12,(Math.toRadians(135))))
-                .strafeToLinearHeading(new Vector2d(16,12),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(16,60),Math.toRadians(90));
+        TrajectoryActionBuilder driveToGet3 = drive.actionBuilder(new Pose2d(-12,-12,(Math.toRadians(-142))))
+                .strafeToLinearHeading(new Vector2d(16,-12),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(16,-67),Math.toRadians(-90));
 
-        TrajectoryActionBuilder driveTo3 = drive.actionBuilder(new Pose2d(16,60,(Math.toRadians(90))))
-                .strafeToLinearHeading(new Vector2d(0,40),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(0,57.5),Math.toRadians(90))
+        TrajectoryActionBuilder driveTo3 = drive.actionBuilder(new Pose2d(16,-67,(Math.toRadians(-90))))
+                .strafeToLinearHeading(new Vector2d(0,-40),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(0,-57),Math.toRadians(-90))
                 .waitSeconds(0.75)
-                .strafeToLinearHeading(new Vector2d(-14,12),Math.toRadians(145));
+                .strafeToLinearHeading(new Vector2d(-16,-12),Math.toRadians(-150));
 
-        TrajectoryActionBuilder driveToEnd = drive.actionBuilder(new Pose2d(-14,12,Math.toRadians(145)))
-                .strafeToLinearHeading(new Vector2d(36,24),Math.toRadians(90));
+        TrajectoryActionBuilder driveToEnd = drive.actionBuilder(new Pose2d(-16,-12,Math.toRadians(-150)))
+                .strafeToLinearHeading(new Vector2d(38,-24),Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(38,-61),Math.toRadians(-90));
 
         waitForStart();
 
@@ -271,7 +257,9 @@ public class RedAuto9EncodersRR extends LinearOpMode {
 
                         intakeSystem.shootThree(),
 
-                        driveToEnd.build()
+                        intake.startIntake(),
+                        driveToEnd.build(),
+                        intake.stopIntake()
 
                 )
         );
