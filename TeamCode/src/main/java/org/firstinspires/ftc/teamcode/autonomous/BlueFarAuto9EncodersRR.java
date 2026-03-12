@@ -22,7 +22,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name="Blue favre 9 (RR)", group="Autonomous")
+@Autonomous(name="Blue Far 9 (RR)", group="Autonomous")
 public class BlueFarAuto9EncodersRR extends LinearOpMode {
 
     public class intake {

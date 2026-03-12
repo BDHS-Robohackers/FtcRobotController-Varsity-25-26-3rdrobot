@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -18,11 +19,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name="brett favre 9 (RR)", group="Autonomous")
+@Autonomous(name="Red Far \"brett favre\" 12 (RR)", group="Autonomous")
 public class RedFarAuto9EncodersRR extends LinearOpMode {
 
     public class intake {
@@ -109,7 +111,7 @@ public class RedFarAuto9EncodersRR extends LinearOpMode {
         public class flywheelFar implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
-                flywheel.setVelocity(1430);
+                flywheel.setVelocity(1445);
                 return false;
             }
         }
@@ -198,14 +200,27 @@ public class RedFarAuto9EncodersRR extends LinearOpMode {
         }
         public Action shootThree() { return new shootThree();}
         public class shootThreeShort implements Action {
+
+            ElapsedTime shootingTimer = new ElapsedTime();
+            boolean started = false;
+
             @Override
-            public boolean run(@NonNull TelemetryPacket packet){
-                intake.setPower(0.80);
-                feedFly.setPower(1);
-                sleep(1500);
-                intake.setPower(0);
-                feedFly.setPower(0);
-                return false;
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                if (!started) {
+                    intake.setPower(0.80);
+                    feedFly.setPower(1);
+                    shootingTimer.reset();
+                    started = true;
+                }
+
+                if (shootingTimer.milliseconds() >= 1500) {
+                    intake.setPower(0);
+                    feedFly.setPower(0);
+                    return false; // finished
+                }
+
+                return true; // keep running
             }
         }
         public Action shootThreeShort() { return new shootThreeShort();}
@@ -219,37 +234,37 @@ public class RedFarAuto9EncodersRR extends LinearOpMode {
         flywheel flywheel = new flywheel(hardwareMap);
 
         TrajectoryActionBuilder driveTo1 = drive.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(48,12),Math.toRadians(150));
+                .strafeToLinearHeading(new Vector2d(48,12),Math.toRadians(145));
 
 
-        TrajectoryActionBuilder driveToGet2 = drive.actionBuilder(new Pose2d(48,12,(Math.toRadians(150))))
+        TrajectoryActionBuilder driveToGet2 = drive.actionBuilder(new Pose2d(48,12,(Math.toRadians(145))))
                 //.turnTo(Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(30,12),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(30,60),Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(30,24),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(30,65),Math.toRadians(90));
                 //.waitSeconds(0.2);
 
-        TrajectoryActionBuilder driveTo2 = drive.actionBuilder(new Pose2d(30,60,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(48,12),Math.toRadians(165));
+        TrajectoryActionBuilder driveTo2 = drive.actionBuilder(new Pose2d(30,65,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(48,12),Math.toRadians(162.5));
 
-        TrajectoryActionBuilder driveToGet3 = drive.actionBuilder(new Pose2d(48,12,(Math.toRadians(165))))
-                .strafeToLinearHeading(new Vector2d(63,67),Math.toRadians(80));
+        TrajectoryActionBuilder driveToGet3 = drive.actionBuilder(new Pose2d(48,12,(Math.toRadians(162.5))))
+                .strafeToLinearHeading(new Vector2d(63,69),Math.toRadians(80));
                 //.strafeToLinearHeading(new Vector2d(16,60),Math.toRadians(90));
                 //.waitSeconds(0.2);
 
-        TrajectoryActionBuilder driveTo3 = drive.actionBuilder(new Pose2d(63,67,(Math.toRadians(80))))
-                .strafeToLinearHeading(new Vector2d(48,12),Math.toRadians(165));
+        TrajectoryActionBuilder driveTo3 = drive.actionBuilder(new Pose2d(63,69,(Math.toRadians(80))))
+                .strafeToLinearHeading(new Vector2d(48,12),Math.toRadians(162.5));
 
-        TrajectoryActionBuilder driveToGet4 = drive.actionBuilder(new Pose2d(48,12,(Math.toRadians(165))))
-                .strafeToLinearHeading(new Vector2d(53,67),Math.toRadians(80));
+        TrajectoryActionBuilder driveToGet4 = drive.actionBuilder(new Pose2d(48,12,(Math.toRadians(160))))
+                .strafeToLinearHeading(new Vector2d(63,69),Math.toRadians(80));
                 //.strafeToLinearHeading(new Vector2d(16,60),Math.toRadians(90));
                 //.waitSeconds(0.2);
 
-        TrajectoryActionBuilder driveTo4 = drive.actionBuilder(new Pose2d(53,67,(Math.toRadians(80))))
-                .strafeToLinearHeading(new Vector2d(47,12),Math.toRadians(165));
+        TrajectoryActionBuilder driveTo4 = drive.actionBuilder(new Pose2d(63,69,(Math.toRadians(80))))
+                .strafeToLinearHeading(new Vector2d(47,12),Math.toRadians(162.5));
 
 
-        TrajectoryActionBuilder driveToEnd = drive.actionBuilder(new Pose2d(47,12,Math.toRadians(165)))
-                .strafeToLinearHeading(new Vector2d(54,36),Math.toRadians(-90));
+        TrajectoryActionBuilder driveToEnd = drive.actionBuilder(new Pose2d(47,12,Math.toRadians(162.5)))
+                .strafeToLinearHeading(new Vector2d(54,36),Math.toRadians(135));
 
         waitForStart();
 
@@ -259,32 +274,82 @@ public class RedFarAuto9EncodersRR extends LinearOpMode {
                         flywheel.flywheelFar(),
                         new SleepAction(2.15),
                         driveTo1.build(),
-                        intakeSystem.shootThree(),
 
-                        intakeSystem.startFrontIntake(),
-
-                        intake.startIntake(),
-                        driveToGet2.build(),
+                        new ParallelAction(
+                                intakeSystem.shootThreeShort(),
+                                new SequentialAction(
+                                        new SleepAction(1.2),
+                                        new ParallelAction(
+                                                intakeSystem.startFrontIntake(),
+                                                driveToGet2.build(),
+                                                new SequentialAction(
+                                                        new SleepAction(0.35),
+                                                        intake.startIntake()
+                                                )
+                                        )
+                                )
+                        ),
                         intake.stopIntake(),
+
 
                         driveTo2.build(),
-                        intakeSystem.shootThree(),
 
-                        intake.startIntake(),
-                        driveToGet3.build(),
+                        new ParallelAction(
+                                intakeSystem.shootThreeShort(),
+                                new SequentialAction(
+                                        new SleepAction(1.2),
+                                        new ParallelAction(
+                                                driveToGet3.build(),
+                                                new SequentialAction(
+                                                        new SleepAction(0.35),
+                                                        intake.startIntake()
+                                                )
+                                        )
+                                )
+                        ),
+
+                        new ParallelAction(
+                                driveTo3.build(),
+                                new SequentialAction(
+                                        new SleepAction(1.0),
+                                        intakeSystem.reverseFrontIntake()
+                                )
+                        ),
+
                         intake.stopIntake(),
+                        intakeSystem.startFrontIntake(),
+                        new ParallelAction(
+                                intakeSystem.shootThreeShort(),
+                                new SequentialAction(
+                                        new SleepAction(1.2),
+                                        new ParallelAction(
+                                                driveToGet4.build(),
+                                                new SequentialAction(
+                                                        new SleepAction(0.35),
+                                                        intake.startIntake()
+                                                )
+                                        )
+                                )
+                        ),
 
-                        driveTo3.build(),
-                        intakeSystem.shootThree(),
+                        new ParallelAction(
+                                driveTo4.build(),
+                                new SequentialAction(
+                                        new SleepAction(1.5),
+                                        intakeSystem.reverseFrontIntake()
+                                )
+                        ),
 
-                        intake.startIntake(),
-                        driveToGet4.build(),
+
                         intake.stopIntake(),
-
-                        driveTo4.build(),
-                        intakeSystem.shootThreeShort(),
-
-                        driveToEnd.build()
+                        intakeSystem.startFrontIntake(),
+                        new ParallelAction(
+                                intakeSystem.shootThreeShort(),
+                                new SequentialAction(
+                                        new SleepAction(1.2),
+                                        driveToEnd.build()
+                                )
+                        )
 
                 )
         );
