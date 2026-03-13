@@ -21,8 +21,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name="Blue Close 9 (RR)", group="Autonomous")
-public class BlueAuto9EncodersRR extends LinearOpMode {
+@Autonomous(name="Blue Close 9 (RR) [After]", group="Autonomous")
+public class BlueAuto9EncodersRRRev1 extends LinearOpMode {
 
     public class intake {
         private DcMotor intake;

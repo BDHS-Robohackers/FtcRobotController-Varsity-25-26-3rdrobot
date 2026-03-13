@@ -111,7 +111,7 @@ public class RedFarAuto9EncodersRR extends LinearOpMode {
         public class flywheelFar implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet){
-                flywheel.setVelocity(1445);
+                flywheel.setVelocity(1455);
                 return false;
             }
         }
@@ -270,87 +270,93 @@ public class RedFarAuto9EncodersRR extends LinearOpMode {
 
         if (isStopRequested()) return;
         Actions.runBlocking(
-                new SequentialAction(
-                        flywheel.flywheelFar(),
-                        new SleepAction(2.15),
-                        driveTo1.build(),
+                new ParallelAction(
+                        new SequentialAction(
+                                flywheel.flywheelFar(),
+                                new SleepAction(2.15),
+                                driveTo1.build(),
 
-                        new ParallelAction(
-                                intakeSystem.shootThreeShort(),
-                                new SequentialAction(
-                                        new SleepAction(1.2),
-                                        new ParallelAction(
-                                                intakeSystem.startFrontIntake(),
-                                                driveToGet2.build(),
-                                                new SequentialAction(
-                                                        new SleepAction(0.35),
-                                                        intake.startIntake()
+                                new ParallelAction(
+                                        intakeSystem.shootThreeShort(),
+                                        new SequentialAction(
+                                                new SleepAction(1.2),
+                                                new ParallelAction(
+                                                        intakeSystem.startFrontIntake(),
+                                                        driveToGet2.build(),
+                                                        new SequentialAction(
+                                                                new SleepAction(0.35),
+                                                                intake.startIntake()
+                                                        )
                                                 )
                                         )
-                                )
-                        ),
-                        intake.stopIntake(),
+                                ),
+                                intake.stopIntake(),
 
 
-                        driveTo2.build(),
+                                driveTo2.build(),
 
-                        new ParallelAction(
-                                intakeSystem.shootThreeShort(),
-                                new SequentialAction(
-                                        new SleepAction(1.2),
-                                        new ParallelAction(
-                                                driveToGet3.build(),
-                                                new SequentialAction(
-                                                        new SleepAction(0.35),
-                                                        intake.startIntake()
+                                new ParallelAction(
+                                        intakeSystem.shootThreeShort(),
+                                        new SequentialAction(
+                                                new SleepAction(1.2),
+                                                new ParallelAction(
+                                                        driveToGet3.build(),
+                                                        new SequentialAction(
+                                                                new SleepAction(0.35),
+                                                                intake.startIntake()
+                                                        )
                                                 )
                                         )
-                                )
-                        ),
+                                ),
 
-                        new ParallelAction(
-                                driveTo3.build(),
-                                new SequentialAction(
-                                        new SleepAction(1.0),
-                                        intakeSystem.reverseFrontIntake()
-                                )
-                        ),
+                                new ParallelAction(
+                                        driveTo3.build(),
+                                        new SequentialAction(
+                                                new SleepAction(1.0),
+                                                intakeSystem.reverseFrontIntake()
+                                        )
+                                ),
 
-                        intake.stopIntake(),
-                        intakeSystem.startFrontIntake(),
-                        new ParallelAction(
-                                intakeSystem.shootThreeShort(),
-                                new SequentialAction(
-                                        new SleepAction(1.2),
-                                        new ParallelAction(
-                                                driveToGet4.build(),
-                                                new SequentialAction(
-                                                        new SleepAction(0.35),
-                                                        intake.startIntake()
+                                intake.stopIntake(),
+                                intakeSystem.startFrontIntake(),
+                                new ParallelAction(
+                                        intakeSystem.shootThreeShort(),
+                                        new SequentialAction(
+                                                new SleepAction(1.2),
+                                                new ParallelAction(
+                                                        driveToGet4.build(),
+                                                        new SequentialAction(
+                                                                new SleepAction(0.35),
+                                                                intake.startIntake()
+                                                        )
                                                 )
                                         )
+                                ),
+
+                                new ParallelAction(
+                                        driveTo4.build(),
+                                        new SequentialAction(
+                                                new SleepAction(1.5),
+                                                intakeSystem.reverseFrontIntake()
+                                        )
+                                ),
+
+
+                                intake.stopIntake(),
+                                intakeSystem.startFrontIntake(),
+                                new ParallelAction(
+                                        intakeSystem.shootThreeShort(),
+                                        new SequentialAction(
+                                                new SleepAction(1.2),
+                                                driveToEnd.build()
+                                        )
                                 )
+
                         ),
-
-                        new ParallelAction(
-                                driveTo4.build(),
-                                new SequentialAction(
-                                        new SleepAction(1.5),
-                                        intakeSystem.reverseFrontIntake()
-                                )
-                        ),
-
-
-                        intake.stopIntake(),
-                        intakeSystem.startFrontIntake(),
-                        new ParallelAction(
-                                intakeSystem.shootThreeShort(),
-                                new SequentialAction(
-                                        new SleepAction(1.2),
-                                        driveToEnd.build()
-                                )
+                        new SequentialAction(
+                                new SleepAction(28.25),
+                                driveToEnd.build()
                         )
-
                 )
         );
     }

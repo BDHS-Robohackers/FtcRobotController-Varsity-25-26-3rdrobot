@@ -36,8 +36,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
-@Autonomous(name="Red Close 9 (RR)", group="Autonomous")
-public class RedAuto9EncodersRR extends LinearOpMode {
+@Autonomous(name="Red Close 9 (RR) [After]", group="Autonomous")
+public class RedAuto9EncodersRRRev1 extends LinearOpMode {
 
     public class intake {
         private DcMotor intake;
